@@ -34,18 +34,18 @@ if(isset($_GET['key'])){
             return;
         case 'log-in':
             $data = json_decode(file_get_contents("php://input"));
-            echo json_encode($repository->SignIn($data));
+            echo json_encode($repository->LogIn($data));
             return;
-        case 'create-appeal':
+        case 'create-petition':
             if($decodeToken = checkToken(true)){
             $data = json_decode(file_get_contents("php://input"));
-            echo json_encode($repository->SignIn($data));
+            echo json_encode($repository->CreatePetition($data));
             }
             return;
         case 'set-score':
             if($decodeToken = checkToken()){
                 $data = json_decode(file_get_contents("php://input"));
-                echo json_encode($repository->SignIn($data));
+                echo json_encode($repository->SetScore($data));
             }
             return;
         default: 
