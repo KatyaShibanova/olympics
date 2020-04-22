@@ -110,6 +110,23 @@
             return $this->database->db->lastInsertId();
         }
 
+        public function SetPetition($userID, $decision){
+            if($userID == null){
+                return array("message" => "Id гостя не может быть пустым", "method" => "SetPetition", "requestData" => $userID);
+            }
+            if($decision == null){
+                return array("message" => "Решение по апелляции не могут быть пустыми", "method" => "SetPetition", "requestData" => $decision);
+            }
+            $decision['userID'] = $userID;
+            $insert = $this->database->getInsertQuery((array)$decision, 'petitions');
+            $query = $this->database->prepare($insert[0]);
+            if($insert[1][0]!=null){
+                $query->execute($insert[1]);
+            }
+
+            return $this->database->db->lastInsertId();
+        }
+
         // public function GenerateLink($link){
         //     if($link == null || !isset($link->guestId) || $link->guestId == null){
         //         //http_response_code(500);

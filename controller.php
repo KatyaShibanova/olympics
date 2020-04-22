@@ -48,6 +48,12 @@ if(isset($_GET['key'])){
                 echo json_encode($repository->SetScore($data));
             }
             return;
+        case 'set-petition':
+            if($decodeToken = checkToken()){
+                $data = json_decode(file_get_contents("php://input"));
+                echo json_encode($repository->SetPetition($data));
+            }
+            return;
         default: 
             if(!$isAdmin){
                 echo json_encode(array("message" => "Ключ запроса не найден"));
