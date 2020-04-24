@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>Форма входа</title>
+    <title>Личный кабинет</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" type="text/css" media="screen" href="styles.css" />
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
@@ -11,15 +11,21 @@
     <!-- <script src="jquery.maskedinput.min.js"></script> -->
 </head>
 <body>
-    <form class="w-50 p-5">
-        <div class="form-group">
-          <label for="exampleInputEmail1">Электронный адрес</label>
-          <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
+    <div class="container">
+        <div>
+            <h2>Личные данные конкурсанта:</h2>
+            <p>Фамилия</p>
+            <p>Имя</p>
+            <p>Отчество</p>
         </div>
-        <div class="form-group">
-          <label for="exampleInputPassword1">Пароль</label>
-          <input type="password" class="form-control" id="exampleInputPassword1">
+        <div>
+            <h2>Результаты конкурса:</h2>
+            <p>100/100</p>
+            <a href="petition.html" class="btn btn-primary">Подать апелляцию</a>
         </div>
-        <button type="submit" class="btn btn-primary">Войти</button>
-      </form>
+        <div>
+            <h2>Решения по апелляциям:</h2>
+            <p>100/100</p>
+        </div>
+    </div>
 </body>
