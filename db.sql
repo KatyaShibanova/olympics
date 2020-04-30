@@ -12,6 +12,7 @@ CREATE TABLE IF NOT EXISTS tasks(
     id int(10) PRIMARY KEY AUTO_INCREMENT,
     type varchar(255),
     task text
+    stage int(10),
 );
 
 CREATE TABLE IF NOT EXISTS checks(
@@ -21,7 +22,6 @@ CREATE TABLE IF NOT EXISTS checks(
     taskID int(10),
     score int(10),
     answer text,
-    stage int(10),
 
     FOREIGN KEY (studentID) REFERENCES users(id),
     FOREIGN KEY (professorID) REFERENCES users(id),  

@@ -12,21 +12,21 @@
 </head>
 <body>
     <div class="container">
-        <div>
-            <h2>Личные данные конкурсанта:</h2>
-            <p>Фамилия</p>
-            <p>Имя</p>
-            <p>Отчество</p>
-            <a href="tasks.html" class="btn btn-primary">Перейти к прохождению заочного этапа</a>
+        <div id="info" class="mb-4">
+            <h2>Личные данные конкурсанта:</h2>            
         </div>
-        <div class="mt-5">
+        <a href="tasks.html" class="btn btn-primary">Перейти к прохождению заочного этапа</a>
+        <div id="results" class="mt-5">
             <h2>Результаты конкурса:</h2>
-            <p>100/100</p>
             <a href="petition.html" class="btn btn-primary">Подать апелляцию</a>
         </div>
-        <div class="mt-5">
+        <div id="pet" class="mt-5">
             <h2>Решения по апелляциям:</h2>
-            <p>100/100</p>
         </div>
     </div>
+    <script type="module">
+        let user = JSON.parse(sessionStorage.getItem('olympicsUserInfo'));
+        console.log(user);
+        info.append('Имя: ', user.surname, ' ', user.name, ' ', user.middlename);
+    </script>
 </body>

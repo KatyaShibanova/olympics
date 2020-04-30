@@ -1,25 +1,49 @@
 <!DOCTYPE html>
 <html>
+
 <head>
-    <meta charset="utf-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>Форма входа</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" type="text/css" media="screen" href="styles.css" />
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
-    <!-- <script src="https://code.jquery.com/jquery-git.min.js"></script> -->
-    <!-- <script src="jquery.maskedinput.min.js"></script> -->
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>Форма входа</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" type="text/css" media="screen" href="styles.css" />
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css"
+    integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+  <!-- <script src="https://code.jquery.com/jquery-git.min.js"></script> -->
+  <!-- <script src="jquery.maskedinput.min.js"></script> -->
 </head>
+
 <body>
-    <form class="w-50 p-5">
-        <div class="form-group">
-          <label for="exampleInputEmail1">Электронный адрес</label>
-          <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
-        </div>
-        <div class="form-group">
-          <label for="exampleInputPassword1">Пароль</label>
-          <input type="password" class="form-control" id="exampleInputPassword1">
-        </div>
-        <button type="submit" class="btn btn-primary">Войти</button>
-      </form>
+  <form class="w-50 p-5" id="loginform">
+    <div class="form-group">
+      <label for="exampleInputEmail1">Электронный адрес</label>
+      <input name="email" type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
+    </div>
+    <div class="form-group">
+      <label for="exampleInputPassword1">Пароль</label>
+      <input name="password" type="password" class="form-control" id="exampleInputPassword1">
+    </div>
+    <button type="button" class="btn btn-primary">Войти</button>
+  </form>
+  <script type="module">
+    import Service from "./service.js";
+    let service = new Service();
+    let logIn = () => {
+      console.log(window.loginform);
+      let { loginform: { elements: { email: { value: emailValue }, password: { value: passwordValue } } } } = window;
+      if (emailValue && passwordValue) {
+        service.logIn(emailValue, passwordValue).then(v => {
+          sessionStorage.setItem(service.key, v.token);
+          sessionStorage.setItem('olympicsUserInfo', JSON.stringify(v.user));
+          document.location.href = service.url + (v.user.isStudent === "1" ? '/student.html' : '/professor.html');
+          // let jj = service.url + (v.user.isStudent ? '/student.html' : '/professor.html');
+          // console.log(jj);
+          // let user = JSON.parse(sessionStorage.getItem('olympicsUserInfo'));
+        })
+      }
+
+    }
+    let button = document.querySelector('.btn').addEventListener('click', logIn);
+
+  </script>
 </body>

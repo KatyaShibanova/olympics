@@ -14,31 +14,42 @@
         }
 
         public function GetTasks(){
-            $query = $this->database->db->$query("SELECT * FROM tasks");
+            $query = $this->database->db->query("SELECT * FROM tasks");
             $query->setFetchMode(PDO::FETCH_CLASS, 'Task');
                 
             return $query->fetchAll();            
         }
 
+        public function GetPrepods(){
+            $query = $this->database->db->query("SELECT * FROM users WHERE isStudent = 0");
+            $query->setFetchMode(PDO::FETCH_CLASS, 'User');
+                
+            return $query->fetchAll();            
+        }
+
+
         public function GetScore($studentID){
             if($studentID == null){
-                return array("message" => "ID пользователя не введен", "method" => "GetScore", "requestData" => $studentID)
+                return array("message" => "ID пользователя не введен", "method" => "GetScore", "requestData" => $studentID);
             }
             $query = $this->database->db->prepare("SELECT score FROM checks WHERE studentID = ?");
-            $query->execute(array($studentID))
+            $query->execute(array($studentID));
             $query->setFetchMode(PDO::FETCH_CLASS, 'Score');
             
             return $query->fetch();
             
         }
 
-        public function SaveAnswer($userID, $answer){
-            if($userID == null){
-                return array("message" => "Id гостя не может быть пустым", "method" => "SaveAnswer", "requestData" => $userID);
+        public function SaveAnswer($studentID, $answer){
+            if($studentID == null){
+                return array("message" => "Id гостя не может быть пустым", "method" => "SaveAnswer", "requestData" => $studentID);
             }
-            $answer['userID'] = $userID;
-            $insert = $this->database->getInsertQuery((array)$answer, 'checks');
-            $query = $this->database->prepare($insert[0]);
+            $answer->studentID = $studentID;
+            $prepods=$this->GetPrepods();
+            $index=rand (0, count($prepods)-1);
+            $answer->professorID = $prepods[$index]->id;
+            $insert = $this->database->genInsertQuery((array)$answer, 'checks');
+            $query = $this->database->db->prepare($insert[0]);
             if($insert[1][0]!=null){
                 $query->execute($insert[1]);
             }
@@ -47,17 +58,19 @@
         }
 
         public function LogIn($user){
-            if($user == null, $user->email == null, $user->password == null){
-                return array("message" => "Укажите данные", "method" => "SignIn", "requestData" => $user);
+            if($user == null || $user->email == null || $user->password == null){
+                return array("message" => "Укажите данные", "method" => "LogIn", "requestData" => $user);
             }
             $query = $this->database->db->prepare("SELECT * FROM users WHERE email = ? and password = ?");
             $query->execute(array($user->email,$user->password));
+            $query->setFetchMode(PDO::FETCH_CLASS, 'User');
             $user = $query->fetch();
             if($user == null) {
-                return array("message" => "Пользователь не найден", "method" => "SignIn", "requestData" => $user);
+                return array("message" => "Пользователь не найден", "method" => "LogIn", "requestData" => $user);
             }
             $user->answers=$this->GetAnswers($user->id);
             $user->petitions=$this->GetPetitions($user->id);
+            return array("token"=>$this->token->encode(array("id"=>$user->id, "isStudent"=>$user->isStudent)),"user"=>$user);
         }
 
         private function GetAnswers($userID){
@@ -76,16 +89,16 @@
             return $query->fetchAll();            
         }
 
-        public function CreatePetition($userID, $petition){
-            if($userID == null){
-                return array("message" => "Id гостя не может быть пустым", "method" => "CreatePetition", "requestData" => $userID);
+        public function CreatePetition($studentID, $petition){
+            if($studentID == null){
+                return array("message" => "Id гостя не может быть пустым", "method" => "CreatePetition", "requestData" => $studentID);
             }
             if($petition == null){
                 return array("message" => "Апелляция не может быть пустой", "method" => "CreatePetition", "requestData" => $petition);
             }
-            $petition['userID'] = $userID;
-            $insert = $this->database->getInsertQuery((array)$petition, 'petitions');
-            $query = $this->database->prepare($insert[0]);
+            $petition->studentID = $studentID;
+            $insert = $this->database->genInsertQuery((array)$petition, 'petitions');
+            $query = $this->database->db->prepare($insert[0]);
             if($insert[1][0]!=null){
                 $query->execute($insert[1]);
             }

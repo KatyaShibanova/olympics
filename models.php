@@ -1,23 +1,18 @@
 <?php
-    class Guest{
+    class User{
         public $id;
         public $name;
         public $surname;
-        public $secondName;
-        public $transfer;
-        public $linkId;
-        public $alcohole;
-        public $food;
-        public $approved;
-
-        public $link;
-        public $children;
+        public $middlename;
+        public $isStudent;
+        public $email;
+        public $password;
     }
 
-    class Link{
+    class Task{
         public $id;
-        public $url;
-        public $header;
+        public $type;
+        public $task;
     }
 
     class Child{
