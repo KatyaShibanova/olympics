@@ -12,7 +12,6 @@ CREATE TABLE IF NOT EXISTS tasks(
     id int(10) PRIMARY KEY AUTO_INCREMENT,
     type varchar(255),
     task text
-    stage int(10),
 );
 
 CREATE TABLE IF NOT EXISTS checks(

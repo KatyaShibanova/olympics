@@ -16,17 +16,39 @@
             <h2>Личные данные конкурсанта:</h2>            
         </div>
         <a href="tasks.html" class="btn btn-primary">Перейти к прохождению заочного этапа</a>
-        <div id="results" class="mt-5">
+        <div id="results" class="mt-5 mb-4">
             <h2>Результаты конкурса:</h2>
-            <a href="petition.html" class="btn btn-primary">Подать апелляцию</a>
         </div>
-        <div id="pet" class="mt-5">
+        <a href="petition.html" class="btn btn-primary">Подать апелляцию</a>
+        <div class="mt-5">
             <h2>Решения по апелляциям:</h2>
+            <div class="pet"></div>
         </div>
     </div>
     <script type="module">
         let user = JSON.parse(sessionStorage.getItem('olympicsUserInfo'));
         console.log(user);
         info.append('Имя: ', user.surname, ' ', user.name, ' ', user.middlename);
+
+        let answers = user.answers;
+        console.log(answers);
+        let sum = 0;
+        answers.forEach(element => {
+            sum = sum + Number(element.score);
+        });
+        console.log(sum);
+        results.append(sum + '/100');
+
+        let petitions = user.petitions;
+        let petsElem = document.querySelector('.pet');
+        petitions.forEach((element, index) => {
+            console.log(element);
+            console.log(index);
+            let petElem = document.createElement('div');
+            petElem.innerHTML = `
+                <p>Апелляция №${index + 1}: ${element.decision}</p>
+            `
+            petsElem.append(petElem);
+        })
     </script>
 </body>

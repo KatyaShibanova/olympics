@@ -39,8 +39,8 @@ if(isset($_GET['key'])){
             return;
         case 'create-petition':
             if($decodeToken = checkToken($token,true)){
-            $data = json_decode(file_get_contents("php://input"));
-            echo json_encode($repository->CreatePetition($decodeToken->id, $data));
+                $data = json_decode(file_get_contents("php://input"));
+                echo json_encode($repository->CreatePetition($decodeToken->id, $data));
             }
             return;
         case 'set-score':

@@ -15,11 +15,12 @@
         public $task;
     }
 
-    class Child{
+    class Petition{
         public $id;
-        public $name;
-        public $age;
-        public $guestId;
+        public $studentId;
+        public $professorId;
+        public $petition;
+        public $decision;
     }
 
     class Neighbour{

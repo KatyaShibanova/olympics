@@ -21,17 +21,19 @@
     <script type="module">
         import Service from "./service.js";
         let service = new Service();
-        let createPetition = ({target:{dataset:{index, id}}})=>{
-        if (index != undefined) {
-            let {value} = document.querySelectorAll('textarea')[index];
-            console.log(value);
-            service.saveAnswer({taskID:id, answer:value}).then(id=>{
-                console.log(id);
-            })
+        //походу у текст ареи нет вэлью??
+        let createPetition= () => {
+            console.log(window.petitionform);
+            let { petitionform: { elements: { petition: { value: petitionValue } } } } = window;
+            if (petitionValue) {
+                service.createPetition(petitionValue).then(v => {
+                    console.log(v);
+                })
+            }
         }
-    }
 
             
         let button = document.querySelector('.btn').addEventListener('click', createPetition);
+        
     </script>
 </body>

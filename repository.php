@@ -57,6 +57,27 @@
             return $this->database->db->lastInsertId();
         }
 
+        public function CreatePetition($studentID, $petition){
+            if($studentID == null){
+                return array("message" => "Id гостя не может быть пустым", "method" => "CreatePetition", "requestData" => $studentID);
+            }
+            if($petition == null){
+                return array("message" => "Апелляция не может быть пустой", "method" => "CreatePetition", "requestData" => $petition);
+            }
+            $petition->studentID = $studentID;
+            $prepods=$this->GetPrepods();
+            $index=rand (0, count($prepods)-1);
+            $petition->professorID = $prepods[$index]->id;
+            $insert = $this->database->genInsertQuery((array)$petition, 'petitions');
+            $query = $this->database->db->prepare($insert[0]);
+            if($insert[1][0]!=null){
+                $query->execute($insert[1]);
+            }
+
+            return $this->database->db->lastInsertId();
+        }
+
+
         public function LogIn($user){
             if($user == null || $user->email == null || $user->password == null){
                 return array("message" => "Укажите данные", "method" => "LogIn", "requestData" => $user);
@@ -74,7 +95,7 @@
         }
 
         private function GetAnswers($userID){
-            $query = $this->database->db->prepare("SELECT c.id, studentID, stage, answer, t.task, score FROM checks c JOIN tasks t on c.taskID = t.id WHERE c.studentID = ?");
+            $query = $this->database->db->prepare("SELECT c.id, studentID, answer, t.task, score FROM checks c JOIN tasks t on c.taskID = t.id WHERE c.studentID = ?");
             $query->execute(array($userID));
             $query->setFetchMode(PDO::FETCH_CLASS, 'Answer');
               
@@ -87,23 +108,6 @@
             $query->setFetchMode(PDO::FETCH_CLASS, 'Petition');
               
             return $query->fetchAll();            
-        }
-
-        public function CreatePetition($studentID, $petition){
-            if($studentID == null){
-                return array("message" => "Id гостя не может быть пустым", "method" => "CreatePetition", "requestData" => $studentID);
-            }
-            if($petition == null){
-                return array("message" => "Апелляция не может быть пустой", "method" => "CreatePetition", "requestData" => $petition);
-            }
-            $petition->studentID = $studentID;
-            $insert = $this->database->genInsertQuery((array)$petition, 'petitions');
-            $query = $this->database->db->prepare($insert[0]);
-            if($insert[1][0]!=null){
-                $query->execute($insert[1]);
-            }
-
-            return $this->database->db->lastInsertId();
         }
 
         public function SetScore($userID, $score){
