@@ -45,16 +45,26 @@
                 return array("message" => "Id гостя не может быть пустым", "method" => "SaveAnswer", "requestData" => $studentID);
             }
             $answer->studentID = $studentID;
-            $prepods=$this->GetPrepods();
-            $index=rand (0, count($prepods)-1);
-            $answer->professorID = $prepods[$index]->id;
+            if(!isset($answer->id)){
+                $prepods=$this->GetPrepods();
+                $index=rand (0, count($prepods)-1);
+                $answer->professorID = $prepods[$index]->id;
+            }
             $insert = $this->database->genInsertQuery((array)$answer, 'checks');
+            if(isset($answer->id)){
+                $id = $answer->id;
+                unset($answer->id);
+                $insert = $this->database->genUpdateQuery(array_keys((array)$answer), array_values((array)$answer), "checks", $id);
+            }
+            
+            
             $query = $this->database->db->prepare($insert[0]);
             if($insert[1][0]!=null){
                 $query->execute($insert[1]);
             }
 
-            return $this->database->db->lastInsertId();
+            // return $this->database->db->lastInsertId();
+            return true;
         }
 
         public function CreatePetition($studentID, $petition){
@@ -65,16 +75,24 @@
                 return array("message" => "Апелляция не может быть пустой", "method" => "CreatePetition", "requestData" => $petition);
             }
             $petition->studentID = $studentID;
-            $prepods=$this->GetPrepods();
-            $index=rand (0, count($prepods)-1);
-            $petition->professorID = $prepods[$index]->id;
+            if(!isset($petition->id)){
+                $prepods=$this->GetPrepods();
+                $index=rand (0, count($prepods)-1);
+                $petition->professorID = $prepods[$index]->id;
+            }
             $insert = $this->database->genInsertQuery((array)$petition, 'petitions');
+            if(isset($petition->id)){
+                $id = $petition->id;
+                unset($petition->id);
+                $insert = $this->database->genUpdateQuery(array_keys((array)$petition), array_values((array)$petition), "petitions", $id);
+            }
             $query = $this->database->db->prepare($insert[0]);
             if($insert[1][0]!=null){
                 $query->execute($insert[1]);
             }
 
-            return $this->database->db->lastInsertId();
+            // return $this->database->db->lastInsertId();
+            return true;
         }
 
 
@@ -90,22 +108,53 @@
                 return array("message" => "Пользователь не найден", "method" => "LogIn", "requestData" => $user);
             }
             $user->answers=$this->GetAnswers($user->id);
-            $user->petitions=$this->GetPetitions($user->id);
             return array("token"=>$this->token->encode(array("id"=>$user->id, "isStudent"=>$user->isStudent)),"user"=>$user);
         }
 
         private function GetAnswers($userID){
-            $query = $this->database->db->prepare("SELECT c.id, studentID, answer, t.task, score FROM checks c JOIN tasks t on c.taskID = t.id WHERE c.studentID = ?");
+            $query = $this->database->db->prepare("SELECT c.id, studentID, answer, t.task, t.type, score FROM checks c JOIN tasks t on c.taskID = t.id WHERE c.studentID = ?");
             $query->execute(array($userID));
-            $query->setFetchMode(PDO::FETCH_CLASS, 'Answer');
+            $query->setFetchMode(PDO::FETCH_CLASS, 'Check');
               
             return $query->fetchAll();            
         }
 
-        private function GetPetitions($userID){
+        public function GetWorkAnswers($workID){
+            $query = $this->database->db->prepare("SELECT c.id, studentID, answer, t.task, t.type, score FROM checks c JOIN tasks t on c.taskID = t.id WHERE c.id = ?");
+            $query->execute(array($workID));
+            $query->setFetchMode(PDO::FETCH_CLASS, 'Check');
+              
+            return $query->fetchAll();            
+        }
+
+        public function GetPetitionDecision($petitionID){
+            $query = $this->database->db->prepare("SELECT * FROM petitions WHERE id = ?");
+            $query->execute(array($petitionID));
+            $query->setFetchMode(PDO::FETCH_CLASS, 'Petition');
+              
+            return $query->fetchAll();            
+        }
+
+        public function GetPetitions($userID){
             $query = $this->database->db->prepare("SELECT studentID, petition, decision FROM petitions WHERE studentID = ?");
             $query->execute(array($userID));
             $query->setFetchMode(PDO::FETCH_CLASS, 'Petition');
+              
+            return $query->fetchAll();            
+        }
+
+        public function GetPrepodPetitions($userID){
+            $query = $this->database->db->prepare("SELECT * FROM petitions WHERE professorID = ?");
+            $query->execute(array($userID));
+            $query->setFetchMode(PDO::FETCH_CLASS, 'Petition');
+              
+            return $query->fetchAll();            
+        }
+
+        public function GetPrepodWorks($userID){
+            $query = $this->database->db->prepare("SELECT * FROM checks WHERE professorID = ?");
+            $query->execute(array($userID));
+            $query->setFetchMode(PDO::FETCH_CLASS, 'Check');
               
             return $query->fetchAll();            
         }

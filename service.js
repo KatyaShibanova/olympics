@@ -37,6 +37,31 @@ export class Service {
         });
     }
 
+    getPetitions() {
+        const url = `${this.base_url}key=get-petitions&token=${this.token}`;
+        return this.get(url);
+    }
+
+    getPrepodPetitions() {
+        const url = `${this.base_url}key=get-prepod-petitions&token=${this.token}`;
+        return this.get(url);
+    }
+
+    getPrepodWorks() {
+        const url = `${this.base_url}key=get-prepod-works&token=${this.token}`;
+        return this.get(url);
+    }
+
+    getWorkAnswers(id) {
+        const url = `${this.base_url}key=get-work-answers&token=${this.token}&workID=${id}`;
+        return this.get(url);
+    }
+
+    getPetitionDecision(id) {
+        const url = `${this.base_url}key=get-petiton-decision&token=${this.token}&petitionID=${id}`;
+        return this.get(url);
+    }
+
     logIn(email, password) {
         const url = `${this.base_url}key=log-in`;
         return this.post(url, { email, password });
@@ -45,10 +70,13 @@ export class Service {
         const url = `${this.base_url}key=save-answer&token=${this.token}`;
         return this.post(url, answer);
     }
-    getTasks(tasks) {
+    getTasks() {
         const url = `${this.base_url}key=get-tasks&token=${this.token}`;
-        return this.get(url, tasks);
+        return this.get(url);
     }
+
+    
+
     getScore(score) {
         const url = `${this.base_url}key=get-score&token=${this.token}`;
         return this.get(url, score);

@@ -1,26 +1,64 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>Личный кабинет</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" type="text/css" media="screen" href="styles.css" />
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css"
+        integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
     <!-- <script src="https://code.jquery.com/jquery-git.min.js"></script> -->
     <!-- <script src="jquery.maskedinput.min.js"></script> -->
 </head>
+
 <body>
+    <div id="infoprepod" class="mb-4 mt-3 ml-3">
+        <h2>Личные данные преподавателя:</h2>
+    </div>
     <div class="containerprof">
         <div class="works">
-            <h2>Работы на проверку:</h2>
+            <h2>Задания на проверку:</h2>
+            <div class="works-inner"></div>
         </div>
         <div class="petitions">
             <h2>Апелляции на рассмотрение:</h2>
+            <div class="petition-inner"></div>
         </div>
     </div>
-    <script>
+    <script type='module'>
+        import Service from "./service.js";
+        let service = new Service();
+
         let user = JSON.parse(sessionStorage.getItem('olympicsUserInfo'));
         console.log(user);
+        infoprepod.append('Имя: ', user.surname, ' ', user.name, ' ', user.middlename);
+
+        service.getPrepodWorks().then(works => {
+            console.log(works);
+            let worksElem = document.querySelector('.works-inner');
+            works.forEach(element => {
+                let workElem = document.createElement('a');
+                workElem.href = `./check_work.html?workID=${element.id}`
+                workElem.innerHTML = `
+                <p>Задание студента №${element.studentID}</p>
+            `
+                worksElem.append(workElem);
+            });
+        })
+
+        service.getPrepodPetitions().then(petitions => {
+            console.log(petitions);
+            let petitionsElem = document.querySelector('.petition-inner');
+            petitions.forEach(element => {
+                let petitionElem = document.createElement('a');
+                petitionElem.href = `./check_petition.html?petitionID=${element.id}`
+                petitionElem.innerHTML = `
+                <p>Апелляция студента №${element.studentID}</p>
+            `
+                petitionsElem.append(petitionElem);
+            });
+        })
     </script>
 </body>

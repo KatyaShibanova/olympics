@@ -11,5 +11,35 @@
     <!-- <script src="jquery.maskedinput.min.js"></script> -->
 </head>
 <body>
-    <h2>Поданная апелляция:</h2>
+    <div class="petition"></div>
+    <script type='module'>
+        import Service from "./service.js";
+        let service = new Service();
+        let url = new URL(window.location.href);
+        console.log(url.searchParams.get('petitionID'));
+        let createPetition = ({ target: { dataset: { index, id } } }) => {  
+            if (index != undefined) {
+                let { value } = document.querySelectorAll('input')[index];
+                console.log(value);
+                service.createPetition({ id: id, decision: value }).then(id => {
+                    console.log(id);
+                })
+            }
+        }
+        let tasksElem = document.querySelector('.petition');
+        tasksElem.addEventListener('click', createPetition);
+        service.getPetitionDecision(url.searchParams.get('petitionID')).then(decision => {
+            console.log(decision);
+            decision.forEach((element, index) => {
+                let taskElem = document.createElement('div');
+                taskElem.innerHTML = `
+                <h2 class="mt-3 ml-3">Апелляция от студента ${element.studentID}:</h2>
+                <p class="mt-3 ml-3">${element.petition}</p>
+                <input class="form-control mt-3 ml-3 w-75" value="${element.decision}">
+                <button class="btn btn-primary mt-3 ml-3" data-index="${index}" data-id="${element.id}">Сохранить решение</button>
+            `
+                tasksElem.append(taskElem);
+            });
+        })
+    </script>
 </body>

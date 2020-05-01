@@ -1,19 +1,22 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>Личный кабинет</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" type="text/css" media="screen" href="styles.css" />
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css"
+        integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
     <!-- <script src="https://code.jquery.com/jquery-git.min.js"></script> -->
     <!-- <script src="jquery.maskedinput.min.js"></script> -->
 </head>
+
 <body>
     <div class="container">
         <div id="info" class="mb-4">
-            <h2>Личные данные конкурсанта:</h2>            
+            <h2>Личные данные конкурсанта:</h2>
         </div>
         <a href="tasks.html" class="btn btn-primary">Перейти к прохождению заочного этапа</a>
         <div id="results" class="mt-5 mb-4">
@@ -26,6 +29,9 @@
         </div>
     </div>
     <script type="module">
+        import Service from "./service.js";
+        let service = new Service();
+
         let user = JSON.parse(sessionStorage.getItem('olympicsUserInfo'));
         console.log(user);
         info.append('Имя: ', user.surname, ' ', user.name, ' ', user.middlename);
@@ -38,17 +44,32 @@
         });
         console.log(sum);
         results.append(sum + '/100');
-
-        let petitions = user.petitions;
-        let petsElem = document.querySelector('.pet');
-        petitions.forEach((element, index) => {
-            console.log(element);
-            console.log(index);
-            let petElem = document.createElement('div');
-            petElem.innerHTML = `
-                <p>Апелляция №${index + 1}: ${element.decision}</p>
-            `
-            petsElem.append(petElem);
+        if (sum > 85) {
+            results.append('  Вы выиграли конкурс!');
+        } else {
+            results.append('  К сожалению, вы не набрали достаточное количество баллов для победы. ');
+        }
+        console.log(service);
+        service.getPetitions().then(petitions => {
+            let petsElem = document.querySelector('.pet');
+            petitions.forEach((element, index) => {
+                console.log(element);
+                console.log(index);
+                let decision = element.decision;
+                console.log(decision);
+                let petElem = document.createElement('div');
+                if (decision != null) {
+                    petElem.innerHTML = `
+                    <p>Апелляция №${index + 1}: ${element.decision}</p>
+                `
+                    petsElem.append(petElem);
+                } else {
+                    petElem.innerHTML = `
+                    <p>Апелляция №${index + 1}: На рассмотрении</p>
+                `
+                    petsElem.append(petElem);
+                }
+            })
         })
     </script>
 </body>

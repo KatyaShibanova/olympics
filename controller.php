@@ -27,8 +27,33 @@ if(isset($_GET['key'])){
                 echo json_encode($repository->GetScore($_GET['studentID']));
             }
             return;
-        case 'save-answer':
+        case 'get-petitions':
             if($decodeToken = checkToken($token,true)){
+                echo json_encode($repository->GetPetitions($decodeToken->id));
+            }
+            return;
+        case 'get-work-answers':
+            if($decodeToken = checkToken($token)){
+                echo json_encode($repository->GetWorkAnswers($_GET['workID']));
+            }
+            return;
+        case 'get-petiton-decision':
+            if($decodeToken = checkToken($token)){
+                echo json_encode($repository->GetPetitionDecision($_GET['petitionID']));
+            }
+            return;
+        case 'get-prepod-petitions':
+            if($decodeToken = checkToken($token)){
+                echo json_encode($repository->GetPrepodPetitions($decodeToken->id));
+            }
+            return;
+        case 'get-prepod-works':
+            if($decodeToken = checkToken($token)){
+                echo json_encode($repository->GetPrepodWorks($decodeToken->id));
+            }
+            return;
+        case 'save-answer':
+            if($decodeToken = checkToken($token)){
                 $data = json_decode(file_get_contents("php://input"));
                 echo json_encode($repository->SaveAnswer($decodeToken->id, $data));
             }
@@ -38,7 +63,7 @@ if(isset($_GET['key'])){
             echo json_encode($repository->LogIn($data));
             return;
         case 'create-petition':
-            if($decodeToken = checkToken($token,true)){
+            if($decodeToken = checkToken($token)){
                 $data = json_decode(file_get_contents("php://input"));
                 echo json_encode($repository->CreatePetition($decodeToken->id, $data));
             }

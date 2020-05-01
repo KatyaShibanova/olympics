@@ -17,15 +17,18 @@
 
     class Petition{
         public $id;
-        public $studentId;
-        public $professorId;
+        public $studentID;
+        public $professorID;
         public $petition;
         public $decision;
     }
 
-    class Neighbour{
+    class Check{
         public $id;
-        public $neighbourId;
-        public $guestId;
+        public $professorID;
+        public $studentID;
+        public $taskId;
+        public $score;
+        public $answer;
     }
 ?>
