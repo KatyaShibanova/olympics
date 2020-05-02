@@ -32,6 +32,11 @@ if(isset($_GET['key'])){
                 echo json_encode($repository->GetPetitions($decodeToken->id));
             }
             return;
+        case 'get-works':
+            if($decodeToken = checkToken($token)){
+                echo json_encode($repository->GetWorks($_GET['userID']));
+            }
+            return;
         case 'get-work-answers':
             if($decodeToken = checkToken($token)){
                 echo json_encode($repository->GetWorkAnswers($_GET['workID']));

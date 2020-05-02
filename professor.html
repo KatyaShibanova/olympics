@@ -17,6 +17,8 @@
     <div id="infoprepod" class="mb-4 mt-3 ml-3">
         <h2>Личные данные преподавателя:</h2>
     </div>
+    <div class="but mb-4 mt-3 ml-3"><a href="graph_student.html" class="btn btn-primary">Сводная статистика по конкурсу</a>
+    </div>
     <div class="containerprof">
         <div class="works">
             <h2>Задания на проверку:</h2>
@@ -26,7 +28,9 @@
             <h2>Апелляции на рассмотрение:</h2>
             <div class="petition-inner"></div>
         </div>
+
     </div>
+
     <script type='module'>
         import Service from "./service.js";
         let service = new Service();
@@ -35,16 +39,42 @@
         console.log(user);
         infoprepod.append('Имя: ', user.surname, ' ', user.name, ' ', user.middlename);
 
+        // service.getPrepodWorks().then(works => {
+        //     console.log(works);
+        //     let values = [];
+        //     works.forEach(element => {
+        //         values.push(element.studentID);
+        //     })
+        //     console.log(values);
+        //     function unique(arr) {
+        //         return Array.from(new Set(arr));
+        //     }   
+        //     let students = unique(values).sort();
+        //     console.log(students);
+        //     let worksElem = document.querySelector('.works-inner');
+        //     students.forEach(element=>{
+        //         let workElem = document.createElement('a');
+        //         workElem.href = `./check_work.html?userID=${element}`
+        //         workElem.innerHTML = `
+        //         <p>Работа студента №${element}</p>
+        //         `
+        //         worksElem.append(workElem);
+        //     })
+        // })
+
+
         service.getPrepodWorks().then(works => {
             console.log(works);
             let worksElem = document.querySelector('.works-inner');
             works.forEach(element => {
-                let workElem = document.createElement('a');
-                workElem.href = `./check_work.html?workID=${element.id}`
-                workElem.innerHTML = `
-                <p>Задание студента №${element.studentID}</p>
-            `
-                worksElem.append(workElem);
+                if (element.score == null) {
+                    let workElem = document.createElement('a');
+                    workElem.href = `./check_task.html?workID=${element.id}`
+                    workElem.innerHTML = `
+                    <p>Задание студента №${element.studentID}</p>
+                    `
+                    worksElem.append(workElem);
+                }
             });
         })
 
@@ -52,12 +82,14 @@
             console.log(petitions);
             let petitionsElem = document.querySelector('.petition-inner');
             petitions.forEach(element => {
-                let petitionElem = document.createElement('a');
-                petitionElem.href = `./check_petition.html?petitionID=${element.id}`
-                petitionElem.innerHTML = `
-                <p>Апелляция студента №${element.studentID}</p>
-            `
-                petitionsElem.append(petitionElem);
+                if (element.decision == null) {
+                    let petitionElem = document.createElement('a');
+                    petitionElem.href = `./check_petition.html?petitionID=${element.id}`
+                    petitionElem.innerHTML = `
+                    <p>Апелляция студента №${element.studentID}</p>
+                    `
+                    petitionsElem.append(petitionElem);
+                }
             });
         })
     </script>

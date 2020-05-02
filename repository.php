@@ -44,8 +44,9 @@
             if($studentID == null){
                 return array("message" => "Id гостя не может быть пустым", "method" => "SaveAnswer", "requestData" => $studentID);
             }
-            $answer->studentID = $studentID;
+            
             if(!isset($answer->id)){
+                $answer->studentID = $studentID;
                 $prepods=$this->GetPrepods();
                 $index=rand (0, count($prepods)-1);
                 $answer->professorID = $prepods[$index]->id;
@@ -74,8 +75,9 @@
             if($petition == null){
                 return array("message" => "Апелляция не может быть пустой", "method" => "CreatePetition", "requestData" => $petition);
             }
-            $petition->studentID = $studentID;
+            
             if(!isset($petition->id)){
+                $petition->studentID = $studentID;
                 $prepods=$this->GetPrepods();
                 $index=rand (0, count($prepods)-1);
                 $petition->professorID = $prepods[$index]->id;
@@ -105,13 +107,21 @@
             $query->setFetchMode(PDO::FETCH_CLASS, 'User');
             $user = $query->fetch();
             if($user == null) {
-                return array("message" => "Пользователь не найден", "method" => "LogIn", "requestData" => $user);
+                return false;
             }
             $user->answers=$this->GetAnswers($user->id);
             return array("token"=>$this->token->encode(array("id"=>$user->id, "isStudent"=>$user->isStudent)),"user"=>$user);
         }
 
         private function GetAnswers($userID){
+            $query = $this->database->db->prepare("SELECT c.id, studentID, answer, t.task, t.type, score FROM checks c JOIN tasks t on c.taskID = t.id WHERE c.studentID = ?");
+            $query->execute(array($userID));
+            $query->setFetchMode(PDO::FETCH_CLASS, 'Check');
+              
+            return $query->fetchAll();            
+        }
+
+        public function GetWorks($userID){
             $query = $this->database->db->prepare("SELECT c.id, studentID, answer, t.task, t.type, score FROM checks c JOIN tasks t on c.taskID = t.id WHERE c.studentID = ?");
             $query->execute(array($userID));
             $query->setFetchMode(PDO::FETCH_CLASS, 'Check');
@@ -136,7 +146,7 @@
         }
 
         public function GetPetitions($userID){
-            $query = $this->database->db->prepare("SELECT studentID, petition, decision FROM petitions WHERE studentID = ?");
+            $query = $this->database->db->prepare("SELECT * FROM petitions WHERE studentID = ?");
             $query->execute(array($userID));
             $query->setFetchMode(PDO::FETCH_CLASS, 'Petition');
               

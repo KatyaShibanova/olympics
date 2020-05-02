@@ -61,6 +61,10 @@ export class Service {
         const url = `${this.base_url}key=get-petiton-decision&token=${this.token}&petitionID=${id}`;
         return this.get(url);
     }
+    getWorks(id) {
+        const url = `${this.base_url}key=get-works&token=${this.token}&userID=${id}`;
+        return this.get(url);
+    }
 
     logIn(email, password) {
         const url = `${this.base_url}key=log-in`;
