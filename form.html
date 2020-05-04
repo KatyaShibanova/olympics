@@ -33,12 +33,13 @@
       let { loginform: { elements: { email: { value: emailValue }, password: { value: passwordValue } } } } = window;
       if (emailValue && passwordValue) {
         service.logIn(emailValue, passwordValue).then(v => {
+          if (!v) {
+            alert('Такого пользователя нет в базе данных.');
+            return;
+          }
           sessionStorage.setItem(service.key, v.token);
           sessionStorage.setItem('olympicsUserInfo', JSON.stringify(v.user));
           document.location.href = service.url + (v.user.isStudent === "1" ? '/student.html' : '/professor.html');
-          if (!user) {
-            alert("lls");
-          }
           // let jj = service.url + (v.user.isStudent ? '/student.html' : '/professor.html');
           // console.log(jj);
           // let user = JSON.parse(sessionStorage.getItem('olympicsUserInfo'));

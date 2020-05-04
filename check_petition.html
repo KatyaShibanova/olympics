@@ -1,15 +1,18 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>Заочный этап</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" type="text/css" media="screen" href="styles.css" />
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css"
+        integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
     <!-- <script src="https://code.jquery.com/jquery-git.min.js"></script> -->
     <!-- <script src="jquery.maskedinput.min.js"></script> -->
 </head>
+
 <body>
     <div class="petition"></div>
     <script type='module'>
@@ -17,7 +20,7 @@
         let service = new Service();
         let url = new URL(window.location.href);
         console.log(url.searchParams.get('petitionID'));
-        let createPetition = ({ target: { dataset: { index, id } } }) => {  
+        let createPetition = ({ target: { dataset: { index, id } } }) => {
             if (index != undefined) {
                 let { value } = document.querySelectorAll('input')[index];
                 console.log(value);
@@ -36,10 +39,14 @@
                 <h2 class="mt-3 ml-3">Апелляция от студента ${element.studentID}:</h2>
                 <p class="mt-3 ml-3">${element.petition}</p>
                 <input class="form-control mt-3 ml-3 w-75" value="${element.decision}">
-                <button class="btn btn-primary mt-3 ml-3" data-index="${index}" data-id="${element.id}">Сохранить решение</button>
+                <button class="btn btn-primary mt-3 ml-3" data-index="${index}" data-id="${element.id}" id="btns">Сохранить решение</button>
             `
                 tasksElem.append(taskElem);
+                document.getElementById("btns").onclick = function () {
+                    this.disabled = true;
+                }
             });
         })
+
     </script>
 </body>

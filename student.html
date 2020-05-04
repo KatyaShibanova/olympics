@@ -18,12 +18,12 @@
         <div id="info" class="mb-4">
             <h2>Личные данные конкурсанта:</h2>
         </div>
-        <a href="tasks.html" class="btn btn-primary">Перейти к прохождению заочного этапа</a>
+        <a href="tasks.html" class="btn btn-primary" id="btns">Перейти к прохождению заочного этапа</a>
         <div id="results" class="mt-5 mb-4">
             <h2>Результаты конкурса:</h2>
         </div>
-        <a href="graph_student.html" class="btn btn-primary">Статистика выполнения заданий</a>
-        <a href="petition.html" class="btn btn-primary">Подать апелляцию</a>
+        <a href="graph_student.html" class="btn btn-primary" id="btns1">Статистика выполнения заданий</a>
+        <a href="petition.html" class="btn btn-primary" id="btns2">Подать апелляцию</a>
         <div class="mt-5">
             <h2>Решения по апелляциям:</h2>
             <div class="pet"></div>
@@ -45,11 +45,28 @@
         });
         console.log(sum);
         results.append(sum + '/100');
+        if (sum > 0){
+            const button = document.getElementById('btns');
+            console.log(button);
+            button.hidden = true;
+        }
         if (sum > 85) {
             results.append('  Вы выиграли конкурс!');
-        } else {
+        } 
+        if (sum > 0 & sum < 86) {
             results.append('  К сожалению, вы не набрали достаточное количество баллов для победы. ');
         }
+        if (sum == 0) {
+            results.append('  Вы пока не приняли участие в конкурсе. ');
+            const button1 = document.getElementById('btns1');
+            console.log(button1);
+            button1.hidden = true;
+            const button2 = document.getElementById('btns2');
+            console.log(button2);
+            button2.hidden = true;
+        }
+        
+
         console.log(service);
         service.getPetitions().then(petitions => {
             let petsElem = document.querySelector('.pet');
